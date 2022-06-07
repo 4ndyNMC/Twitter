@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
 
+    public static final String TAG = "TweetsAdapter";
     Context context;
     List<Tweet> tweets;
 
@@ -64,12 +66,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView ivProfileImage;
+        ImageView ivAttachment;
         TextView tvBody;
         TextView tvScreenName;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
+            ivAttachment = itemView.findViewById(R.id.ivAttachment);
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
         }
@@ -78,6 +82,12 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvBody.setText(tweet.body);
             tvScreenName.setText(tweet.user.screenName);
             Glide.with(context).load(tweet.user.publicImageUrl).into(ivProfileImage);
+            if (tweet.attachmentUrl != null) {
+                Log.i(TAG, "loading image for " + tweet.user.screenName);
+                Glide.with(context).load(tweet.attachmentUrl).override(1500, 500).into(ivAttachment);
+            } else {
+                ivAttachment.setImageResource(0);
+            }
         }
     }
 

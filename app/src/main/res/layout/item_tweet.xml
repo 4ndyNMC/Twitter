@@ -37,4 +37,13 @@
         android:layout_marginTop="2dp"
         android:layout_toEndOf="@+id/ivProfileImage"
         tools:text="hey everyone it's random epic awesome twitter user how's it going??" />
+
+    <ImageView
+        android:id="@+id/ivAttachment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvBody"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"/>
 </RelativeLayout>
