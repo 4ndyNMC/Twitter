@@ -29,15 +29,15 @@ android {
     
     // Related to https://github.com/scribejava/scribejava/issues/480
     // Scribe expects Java 7 or this custom Apache library
-    lintOptions {
-        lintConfig rootProject.file('gradle/lint.xml')
-    }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+    }
+    lint {
+        lintConfig file('gradle/lint.xml')
     }
 }
 
@@ -58,4 +58,6 @@ dependencies {
     // Parcel
     implementation 'org.parceler:parceler-api:1.1.12'
     annotationProcessor 'org.parceler:parceler:1.1.12'
+
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 }
