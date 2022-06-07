@@ -7,4 +7,9 @@
         android:icon="@android:drawable/ic_menu_edit"
         android:title="compose"
         app:showAsAction="always" />
+<!--    <item-->
+<!--        android:id="@+id/logo"-->
+<!--        android:icon="@drawable/ic_logo"-->
+<!--        android:title="logo"-->
+<!--        app:showAsAction="always" />-->
 </menu>

@@ -27,6 +27,7 @@ public class ComposeActivity extends AppCompatActivity {
     TwitterClient client;
     EditText etCompose;
     Button btnTweet;
+    Button btnCancel;
     TextView count;
     public static final String TAG = "ComposeActivity";
     public static final int MAX_LENGTH = 140;
@@ -40,6 +41,7 @@ public class ComposeActivity extends AppCompatActivity {
 
         etCompose = findViewById(R.id.etCompose);
         btnTweet = findViewById(R.id.btnTweet);
+        btnCancel = findViewById(R.id.btnCancel);
         count = findViewById(R.id.tvCharCount);
 
         etCompose.addTextChangedListener(new TextWatcher() {
@@ -65,7 +67,15 @@ public class ComposeActivity extends AppCompatActivity {
             }
         });
 
-        // Set click listener on button
+        // Set click listener on Cancel button
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        // Set click listener on Tweet button
         btnTweet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
