@@ -37,7 +37,9 @@ public class TimelineActivity extends AppCompatActivity {
     RecyclerView rvTweets;
     List<Tweet> tweets;
     TweetsAdapter adapter;
+    MenuItem miActionProgressItem;
     private SwipeRefreshLayout swipeContainer;
+    private EndlessRecyclerViewScrollListener scrollListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +47,8 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(R.layout.activity_timeline);
 
         client = TwitterApp.getRestClient(this);
+
+
 
         // Lookup the swipe container view
         swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
@@ -68,7 +72,52 @@ public class TimelineActivity extends AppCompatActivity {
         // Configure the recycler view setup: layout manager and adapter
         rvTweets.setLayoutManager(new LinearLayoutManager((this)));
         rvTweets.setAdapter(adapter);
+
+        // Configure recycler view for endless scroll
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        rvTweets.setLayoutManager(linearLayoutManager);
+        // Retain an instance so that you can call 'resetState()' for fresh searches
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextDataFromApi(page, view);
+            }
+        };
+
+        // Adds the scroll listener to RecyclerView
+        rvTweets.addOnScrollListener(scrollListener);
+
         populateHomeTimeline();
+    }
+
+    // Append the next page of data to the adapter
+    // This method probably sends out a network request and appends new data items to your adapter.
+    public void loadNextDataFromApi(int offset, RecyclerView view) {
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
+        client.getHomeTimeline(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Headers headers, JSON json) {
+                JSONArray jsonArray = json.jsonArray;
+                try {
+                    tweets.addAll(Tweet.fromJsonArray(jsonArray));
+                    adapter.notifyItemRangeInserted(adapter.getItemCount(), tweets.size() - 1);
+                } catch (JSONException e) {
+                    Log.e(TAG, "Json exception", e);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
+                Log.d(TAG, "OnFailure fetch timeline error scroll: ", throwable);
+            }
+        }, offset + 1);
     }
 
     public void fetchTimelineAsync(int page) {
@@ -120,6 +169,8 @@ public class TimelineActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
@@ -134,6 +185,22 @@ public class TimelineActivity extends AppCompatActivity {
             rvTweets.smoothScrollToPosition(0);
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // Store instance of the menu item containing progress
+        miActionProgressItem = menu.findItem(R.id.miActionProgress);
+        // Return to finish
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    public void showProgressBar() {
+        miActionProgressItem.setVisible(true);
+    }
+
+    public void hideProgressBar() {
+        miActionProgressItem.setVisible(false);
     }
 
     private void populateHomeTimeline() {
@@ -154,6 +221,7 @@ public class TimelineActivity extends AppCompatActivity {
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.i(TAG, "onFailure!", throwable);
+                Log.i(TAG, "onFailure!" + response);
             }
         });
     }

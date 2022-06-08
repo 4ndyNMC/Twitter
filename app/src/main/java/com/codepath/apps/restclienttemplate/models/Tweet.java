@@ -37,7 +37,6 @@ public class Tweet {
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         tweet.date = getRelativeTimeAgo(jsonObject.getString("created_at"));
-//        Log.i(TAG, "Date published: " + getRelativeTimeAgo(jsonObject.getString("created_at")));
         if (jsonObject.getJSONObject("entities").has("media")) {
             tweet.attachmentUrl = jsonObject.getJSONObject("entities")
                     .getJSONArray("media").getJSONObject(0).getString("media_url");
@@ -55,7 +54,7 @@ public class Tweet {
         return tweets;
     }
 
-    // FROM GITHUB USER nesquena
+    // from github user nesquena
     // https://gist.github.com/nesquena/f786232f5ef72f6e10a7
     // getRelativeTimeAgo("Mon Apr 01 21:16:23 +0000 2014");
     @RequiresApi(api = Build.VERSION_CODES.N)
