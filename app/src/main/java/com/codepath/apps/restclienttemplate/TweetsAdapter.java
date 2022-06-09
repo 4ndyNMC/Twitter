@@ -85,9 +85,13 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvDate.setText(tweet.date);
             Glide.with(context).load(tweet.user.publicImageUrl).into(ivProfileImage);
             if (tweet.attachmentUrl != null) {
-                Glide.with(context).load(tweet.attachmentUrl).override(1500, 500).into(ivAttachment);
+                ivAttachment.setVisibility(View.VISIBLE);
+                Glide.with(context)
+                        .load(tweet.attachmentUrl)
+                        .override(1500, 1000)
+                        .into(ivAttachment);
             } else {
-                ivAttachment.setImageResource(0);
+                ivAttachment.setVisibility(View.GONE);
             }
         }
     }

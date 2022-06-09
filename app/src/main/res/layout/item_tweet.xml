@@ -36,6 +36,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="2dp"
         android:layout_toEndOf="@+id/ivProfileImage"
+        android:autoLink="web"
         tools:text="hey everyone it's random epic awesome twitter user how's it going??" />
 
     <ImageView
@@ -44,8 +45,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvBody"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp" />
 
     <TextView
         android:id="@+id/tvDate"
