@@ -7,6 +7,11 @@ import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.net.ParseException;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.ForeignKey;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,13 +23,31 @@ import java.util.List;
 import java.util.Locale;
 
 @Parcel
+@Entity(foreignKeys = @ForeignKey(entity = User.class, parentColumns = "id", childColumns = "userId"))
 public class Tweet {
 
     public static final String TAG = "Tweet";
+
+    @ColumnInfo
+    @PrimaryKey
+    public Long id;
+
+    @ColumnInfo
     public String body;
+
+    @ColumnInfo
     public String createdAt;
+
+    @ColumnInfo
     public String attachmentUrl;
+
+    @ColumnInfo
     public String date;
+
+    @ColumnInfo
+    public Long userId;
+
+    @Ignore
     public User user;
 
     // empty constructor needed by Parceler library
@@ -35,7 +58,9 @@ public class Tweet {
         Tweet tweet = new Tweet();
         tweet.body = jsonObject.getString("text");
         tweet.createdAt = jsonObject.getString("created_at");
-        tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
+        User user = User.fromJson(jsonObject.getJSONObject("user"));
+        tweet.user = user;
+        tweet.userId = user.id;
         tweet.date = getRelativeTimeAgo(jsonObject.getString("created_at"));
         if (jsonObject.getJSONObject("entities").has("media")) {
             tweet.attachmentUrl = jsonObject.getJSONObject("entities")
