@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 2,
-    "identityHash": "916d5e42dcbff6c602ab0b0de9a68acf",
+    "version": 6,
+    "identityHash": "13bb7c7d2b696a674dbc6ed63422bf0b",
     "entities": [
       {
         "tableName": "SampleModel",
@@ -79,12 +79,13 @@
         },
         "indices": [
           {
-            "name": "index_Tweet_id",
+            "name": "index_Tweet_id_body",
             "unique": true,
             "columnNames": [
-              "id"
+              "id",
+              "body"
             ],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Tweet_id` ON `${TABLE_NAME}` (`id`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Tweet_id_body` ON `${TABLE_NAME}` (`id`, `body`)"
           }
         ],
         "foreignKeys": [
@@ -143,7 +144,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '916d5e42dcbff6c602ab0b0de9a68acf')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '13bb7c7d2b696a674dbc6ed63422bf0b')"
     ]
   }
 }

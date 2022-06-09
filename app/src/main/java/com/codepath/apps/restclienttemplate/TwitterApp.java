@@ -26,7 +26,7 @@ public class TwitterApp extends Application {
         // when upgrading versions, kill the original tables by using
 		// fallbackToDestructiveMigration()
         myDatabase = Room.databaseBuilder(this, MyDatabase.class,
-                MyDatabase.NAME).fallbackToDestructiveMigration().build();
+                MyDatabase.NAME).allowMainThreadQueries().fallbackToDestructiveMigration().build();
 
         // use chrome://inspect to inspect your SQL database
         Stetho.initializeWithDefaults(this);

@@ -14,7 +14,7 @@ public interface TweetDao {
             "Tweet.createdAt AS tweet_createdAt, " +
             "Tweet.attachmentUrl AS tweet_attachmentUrl, " +
             "Tweet.date AS tweet_date, User.* " +
-            "FROM Tweet INNER JOIN User ON Tweet.userId = User.id ORDER BY Tweet.createdAt DESC LIMIT 5")
+            "FROM Tweet INNER JOIN User ON Tweet.userId = User.id ORDER BY Tweet.createdAt DESC LIMIT 25")
     List<TweetWithUser> recentItems();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

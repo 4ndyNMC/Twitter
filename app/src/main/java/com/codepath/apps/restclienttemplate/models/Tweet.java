@@ -11,6 +11,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
 import androidx.room.Ignore;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
 import org.json.JSONArray;
@@ -23,7 +24,8 @@ import java.util.List;
 import java.util.Locale;
 
 @Parcel
-@Entity(foreignKeys = @ForeignKey(entity = User.class, parentColumns = "id", childColumns = "userId"))
+@Entity(foreignKeys = @ForeignKey(entity = User.class, parentColumns = "id", childColumns = "userId"),
+        indices = {@Index(value = {"id", "body"}, unique = true)})
 public class Tweet {
 
     public static final String TAG = "Tweet";
@@ -65,7 +67,6 @@ public class Tweet {
         if (jsonObject.getJSONObject("entities").has("media")) {
             tweet.attachmentUrl = jsonObject.getJSONObject("entities")
                     .getJSONArray("media").getJSONObject(0).getString("media_url");
-            Log.i(TAG, "MEDIA URL: " + tweet.attachmentUrl);
         }
         return tweet;
     }

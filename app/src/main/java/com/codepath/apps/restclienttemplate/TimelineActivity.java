@@ -91,24 +91,13 @@ public class TimelineActivity extends AppCompatActivity {
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 // Triggered only when new data needs to be appended to the list
                 // Add whatever code is needed to append new items to the bottom of the list
+                Log.i(TAG, "bottom of page!");
                 loadNextDataFromApi(page, view);
             }
         };
 
         // Adds the scroll listener to RecyclerView
         rvTweets.addOnScrollListener(scrollListener);
-
-        // Query for existing tweets in the DB
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                Log.i(TAG, "Showing data from DB");
-                List<TweetWithUser> tweetWithUsers = tweetDao.recentItems() ;
-                List<Tweet> tweetsFromDB = TweetWithUser.getTweetList(tweetWithUsers);
-                adapter.clear();
-                adapter.addAll(tweetsFromDB);
-            }
-        });
 
         populateHomeTimeline(rvTweets);
     }
@@ -126,6 +115,7 @@ public class TimelineActivity extends AppCompatActivity {
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 JSONArray jsonArray = json.jsonArray;
                 try {
+                    Log.i(TAG, "loading more!");
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
                     adapter.notifyItemRangeInserted(adapter.getItemCount(), tweets.size() - 1);
                 } catch (JSONException e) {
@@ -138,6 +128,7 @@ public class TimelineActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.d(TAG, "OnFailure fetch timeline error scroll: ", throwable);
                 displayErrorBar(view);
+                loadTweetsFromDB();
             }
         }, offset + 1);
     }
@@ -168,6 +159,8 @@ public class TimelineActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.d(TAG, "OnFailure fetch timeline error: ", throwable);
                 displayErrorBar(view);
+                loadTweetsFromDB();
+                swipeContainer.setRefreshing(false);
             }
         });
     }
@@ -181,18 +174,26 @@ public class TimelineActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.compose) {
-            // Compose icon gas been selected
-            // Navigate to the compose activity
-            Intent intent = new Intent(this, ComposeActivity.class);
+        switch (item.getItemId()) {
+            case R.id.compose:
+                // Compose icon gas been selected
+                // Navigate to the compose activity
+                Intent intent = new Intent(this, ComposeActivity.class);
 //            startActivity(intent);
-            startActivityForResult(intent, REQUEST_CODE);
-            return true;
+                startActivityForResult(intent, REQUEST_CODE);
+                return true;
+            case R.id.logout:
+                // forget who's logged in
+                TwitterApp.getRestClient(this).clearAccessToken();
+
+                // navigate backwards to Login screen
+                Intent i = new Intent(this, LoginActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -258,7 +259,35 @@ public class TimelineActivity extends AppCompatActivity {
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.i(TAG, "onFailure!", throwable);
                 Log.i(TAG, "onFailure!" + response);
+                loadTweetsFromDB();
                 displayErrorBar(view);
+            }
+        });
+    }
+
+    public void loadTweetsFromDB() {
+        // Query for existing tweets in the DB
+//        AsyncTask.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                Log.i(TAG, "Showing data from DB");
+//                List<TweetWithUser> tweetWithUsers = tweetDao.recentItems() ;
+//                List<Tweet> tweetsFromDB = TweetWithUser.getTweetList(tweetWithUsers);
+//                adapter.clear();
+//                adapter.addAll(tweetsFromDB);
+//            }
+//        });
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.i(TAG, "Showing data from DB");
+                List<TweetWithUser> tweetWithUsers = tweetDao.recentItems() ;
+                List<Tweet> tweetsFromDB = TweetWithUser.getTweetList(tweetWithUsers);
+                adapter.clear();
+                for (int i = 0; i < tweetsFromDB.size() / 2; i++) {
+                    tweetsFromDB.remove(i);
+                }
+                adapter.addAll(tweetsFromDB);
             }
         });
     }
@@ -275,14 +304,4 @@ public class TimelineActivity extends AppCompatActivity {
         snackbar.show();
     }
 
-    public void onLogoutButton(View view) {
-        // forget who's logged in
-        TwitterApp.getRestClient(this).clearAccessToken();
-
-        // navigate backwards to Login screen
-        Intent i = new Intent(this, LoginActivity.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(i);
-    }
 }
