@@ -47,18 +47,13 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://i.imgur.com/link/to/your/gif/file.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
-
-GIF created with [Kap](https://getkap.co/).
-
-## Notes
-
-Describe any challenges encountered while building the app.
+![Screen_Recording_2022-06-10_at_11_56_13_AM_AdobeExpress](https://user-images.githubusercontent.com/36943811/173132685-96707311-ba0c-4bcf-b866-311c1dddeba4.gif)
 
 ## Open-source libraries used
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
 - [Glide](https://github.com/bumptech/glide) - Image loading and caching library for Android
+- [Room] (https://developer.android.com/jetpack/androidx/releases/roomgclid=CjwKCAjw14uVBhBEEiwAaufYxxLAO8H10NFOWCAXAmWkcxfbKm8QmQ829amxlQ9xpRet4nwpbtyavRoCarEQAvD_BwE&gclsrc=aw.ds) - Creating SQLite databases for android apps
 
 ## License
 
