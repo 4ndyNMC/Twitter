@@ -54,7 +54,6 @@ Here's a walkthrough of implemented user stories:
 
 - [Android Async HTTP](https://github.com/loopj/android-async-http) - Simple asynchronous HTTP requests with JSON parsing
 - [Glide](https://github.com/bumptech/glide) - Image loading and caching library for Android
-- [Room] (https://developer.android.com/jetpack/androidx/releases/roomgclid=CjwKCAjw14uVBhBEEiwAaufYxxLAO8H10NFOWCAXAmWkcxfbKm8QmQ829amxlQ9xpRet4nwpbtyavRoCarEQAvD_BwE&gclsrc=aw.ds) - Creating SQLite databases for android apps
 
 ## License
 
